@@ -15,12 +15,21 @@ results = soup.find(id="tablepress-104")
 #SQL queries
 connection = queries.create_database_connection("localhost", "root", queries.pw, "bjj")
 #this query creates the athletes table with all the columns.
-create_table_query = ("CREATE TABLE athletes("
+create_athl_list = ("CREATE TABLE athletes("
                       "id int PRIMARY KEY,"
                       "First_Name text,"
                       "Last_Name text,"
                       "Nickname text,"
                       "Team text)")
+
+create_match_record = ("CREATE TABLE $("
+                       "Opponent text,"
+                       "Outcome text,"
+                       "Method text,"
+                       "Event text,"
+                       "Division text,"
+                       "Stage text,"
+                       "Year int)")
 
 
 row = 2
@@ -53,9 +62,33 @@ while rowData is not None:
     if record is not None:
         wins = record.find(class_="Win_title").find("em").string
         loss = record.find(class_="Win_title_lose").find("em").string
-        subs = record.find(str="BY SUBMISSION").find(class_="per_no").string
         wins = wins.replace("WINS", "")
         loss = loss.replace("LOSSES", "")
+        #iterate through record here
+        history = athSoup.find("tbody").find_all("tr")
+        for match in history:
+            #print(match.prettify())
+            tds = match.find_all("td")
+            if tds is not None:
+                #for td in tds:
+                #    print(td.string)
+                print(tds[1])
+                opponent = tds[1].find("span").string
+                outcome = tds[2].string
+                method = tds[3].string
+                event = tds[4].string
+                weight = tds[5].string
+                stage = tds[6].string
+                year = tds[7].string
+                print(opponent)
+                print(outcome)
+                print(method)
+                print(event)
+                print(weight)
+                print(stage)
+                print(year)
+            print()
+        
     else:
         wins = "0"
         loss = "0"
@@ -68,7 +101,6 @@ while rowData is not None:
     else:
         winrate = 0;
     print(int(winrate))
-    print(subs)
 
 
     #now get next athlete
